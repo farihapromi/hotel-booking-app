@@ -10,6 +10,7 @@ import closeIcon from "../assets/closeIcon.svg"
 <img src={searchIcon} alt="Search" />
 
 import { Link } from 'react-router-dom';
+import { SignIn, useClerk, useUser } from '@clerk/clerk-react';
 const Navbar = () => {
     const navLinks = [
         { name: 'Home', path: '/' },
@@ -21,7 +22,9 @@ const Navbar = () => {
   
     const [isScrolled, setIsScrolled] =useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+    const {openSignIn}=useClerk()
+    const {user}=useUser()
+  
    useEffect(() => {
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 10);
@@ -55,7 +58,8 @@ const Navbar = () => {
                 {/* Desktop Right */}
                 <div className="hidden md:flex items-center gap-4">
                     <img src={searchIcon} alt="src" className={` ${isScrolled && "invert "} h-7 transition-all duration-500`}/>
-                    <button className="bg-black text-white px-8 py-2.5 rounded-full ml-4 transition-all duration-500">
+                    <button onClick={openSignIn}
+                    className="bg-black text-white px-8 py-2.5 rounded-full ml-4 transition-all duration-500">
                         Login
                     </button>
                 </div>
@@ -82,7 +86,7 @@ const Navbar = () => {
                         New Launch
                     </button>
 
-                    <button className="bg-black text-white px-8 py-2.5 rounded-full transition-all duration-500">
+                    <button onClick={openSignIn}className="bg-black text-white px-8 py-2.5 rounded-full transition-all duration-500">
                         Login
                     </button>
                 </div>
