@@ -51,7 +51,7 @@ const HotelCard = ({room,index}) => {
         <span className="text-sm text-gray-500 font-light">/night</span>
       </p>
       <button className="px-4 py-2 text-sm font-medium border border-gray-300 rounded hover:bg-gray-100 transition-all">
-        View Details
+        Book Now
       </button>
     </div>
   </div>
