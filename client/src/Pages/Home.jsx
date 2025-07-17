@@ -4,6 +4,7 @@ import FeatureDestination from '../Components/FeatureDestination'
 import ExclusiveOffer from '../Components/ExclusiveOffer'
 import Testimonial from '../Components/Testimonial'
 import NewsLetter from '../Components/NewsLetter'
+import Footer from '../Components/Footer'
 
 const Home = () => {
   return (
@@ -13,6 +14,7 @@ const Home = () => {
  <ExclusiveOffer/>
  <Testimonial/>
  <NewsLetter/>
+ <Footer/>
  
  </>
   )
