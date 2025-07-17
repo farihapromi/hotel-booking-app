@@ -2,8 +2,10 @@ import React from 'react'
 import { roomsDummyData } from '../assets/assets'
 import HotelCard from './HotelCard'
 import Title from './Title'
+import { useNavigate } from 'react-router-dom'
 
 const FeatureDestination = () => {
+  const navigate=useNavigate()
   return (
     <div className='flex flex-col items-center px-6 md:px-16 lg:px-24 bg-slate-50 py-20'>
       <Title title='Featured Destination'
@@ -14,6 +16,12 @@ const FeatureDestination = () => {
     <HotelCard key={room._id} room={room} index={index} />
   ))}
 </div>
+{/* 
+Button */}
+<button onClick={()=>{navigate('/rooms'); scrollTo(0,0)}}
+ className='bg-blue-400 text-white  px-4 py-4 mt-8  my-16 rounded-lg hover:bg-blue-600 transition-all cursor-pointer'>
+  View All Destinations
+</button>
 
       
     </div>
