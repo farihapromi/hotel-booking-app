@@ -21,6 +21,9 @@ const Navbar = () => {
         { name: 'Hotel', path: '/rooms' },
         { name: 'Experience', path: '/' },
         { name: 'About', path: '/' },
+        {
+            name:'Dashboard',path:'/dashboard'
+        }
     ];
 
   
