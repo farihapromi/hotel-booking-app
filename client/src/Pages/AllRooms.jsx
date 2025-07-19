@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { roomsDummyData } from '../assets/assets'
 import RoomCard from './RoomCard'
+import { CheckBox, RadioButton } from '../Components/FiltesOptions'
 
 const AllRooms = () => {
   const [openFilters,setOpenFilters]=useState(false)
@@ -52,6 +53,19 @@ const AllRooms = () => {
         <div className={`${openFilters ?'h-auto':'h-0 lg:h-auto'} overflow-hidden transition-all duration-700`}>
           <div className="px-5 pt-5">
             <p className='font-medium text-gray-800 pb-2'>Popular Filters</p>
+            {roomTypes.map((room,index)=>(<CheckBox key={index} label={room}/>))}
+
+          </div>
+          {/* for price */}
+          <div className="px-5 pt-5 text-blue-400 font-bold">
+            <p className='font-medium text-gray-800 pb-2 text-xl'>Price Ranges</p>
+            {PriceRanges.map((price,index)=>(<CheckBox key={index} label={`$ ${price}`}/>))}
+
+          </div>
+          {/* sort options */}
+           <div className="px-5 pt-5 pb-7">
+            <p className='font-medium text-gray-800 pb-2'>Sort By</p>
+            {sortOptions.map((option,index)=>(<RadioButton key={index} label={option}/>))}
 
           </div>
 

@@ -1,3 +1,4 @@
+import React from 'react'
 export const CheckBox=({label,selected=false,onChange= () =>{}})=>{
     return(
         <label className='flex gap-3 items-center cursor-pointer'>
