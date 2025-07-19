@@ -36,6 +36,8 @@ const RoomCard = ({rooms}) => {
                 }
 
             </div>
+            {/* price room */}
+            <p className='text-xl font-medium text-gray-700'>${pricePerNight} /night</p>
         
         </div>
       </div>

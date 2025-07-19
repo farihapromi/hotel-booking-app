@@ -1,8 +1,15 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { roomsDummyData } from '../assets/assets'
 import RoomCard from './RoomCard'
 
 const AllRooms = () => {
+  const [openFilters,setOpenFilters]=useState(false)
+  const roomTypes=[
+    "Single Bed",
+    "Double Bed",
+    "Luxury Bed",
+    "Family Suite"
+  ]
   return (
     <div className='flex flex-col-reverse lg:flex-row items-start justify-between pt-28 md:pt-35 px-6 md:px-16 lg:px-24 xl:px-32'>
      
@@ -20,7 +27,24 @@ const AllRooms = () => {
           </div>
      
       {/* filters */}
-      <div>
+      <div className='bg-white w-80 border border-gray-300 text-gray-600 max-lg:mb-8 min-lg:mt-16'>
+        <div className={`flex items-center justify-between px-5 py-3 min-lg:border-b border-gray-300 ${openFilters && 'border-b'}`}>
+          <p className='text-base font-medium text-gray-800'>FILTERS</p>
+          <div className='textt-xs cursor-pointer'>
+            <span onClick={()=>setOpenFilters(!openFilters)} className='lg:hidden'>
+              {openFilters ? 'HIDE':'SHOW'}
+            </span>
+            <span className='hidden lg:block'>CLEAR</span>
+          </div>
+        </div>
+        {/* filters items */}
+        <div className={`${openFilters ?'h-auto':'h-0 lg:h-auto'} overflow-hidden transition-all duration-700`}>
+          <div className="px-5 pt-5">
+            <p className='font-medium text-gray-800 pb-2'>Popular Filters</p>
+
+          </div>
+
+        </div>
 
       </div>
       
