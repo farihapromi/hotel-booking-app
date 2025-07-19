@@ -9,6 +9,17 @@ const AllRooms = () => {
     "Double Bed",
     "Luxury Bed",
     "Family Suite"
+  ];
+  const PriceRanges=[
+    '0 to 500',
+    '500 to 1000',
+    '1000 to 2000',
+    '2000 to 3000'
+  ];
+  const sortOptions=[
+    'Price Low to High',
+    'Price High to Low',
+    'Newsest First'
   ]
   return (
     <div className='flex flex-col-reverse lg:flex-row items-start justify-between pt-28 md:pt-35 px-6 md:px-16 lg:px-24 xl:px-32'>
