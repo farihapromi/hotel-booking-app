@@ -20,7 +20,9 @@ const RoomDetails = () => {
             {room.hotel.name}
             <span className='font-inter text-sm'>({room.roomType})</span>
           </h1>
-          <p>20% OFF</p>
+          <p className='font-inter text-xm py-1.5 px-3 text-white bg-orange-500 rounded-full'>
+            20% OFF
+          </p>
         </div>
       </div>
     )
