@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { assets, facilityIcons, roomsDummyData } from '../assets/assets';
+import {
+  assets,
+  facilityIcons,
+  roomCommonData,
+  roomsDummyData,
+} from '../assets/assets';
 import StarRating from '../Components/StarRating';
 
 const RoomDetails = () => {
@@ -103,6 +108,7 @@ const RoomDetails = () => {
                 required
               />
             </div>
+            <div className='w-px h-15 bg-gray-300/70 max-md:hidden'></div>
             <div className='flex flex-col'>
               <label htmlFor='CheckOut' className='font-medium'>
                 Check-Out
@@ -115,6 +121,7 @@ const RoomDetails = () => {
                 required
               />
             </div>
+            <div className='w-px h-15 bg-gray-300/70 max-md:hidden'></div>
             <div className='flex flex-col'>
               <label htmlFor='guests' className='font-medium'>
                 Guests
@@ -132,9 +139,51 @@ const RoomDetails = () => {
             type='submit'
             className='bg-primary hover:bg-primary-dull active:scale-95 transition-all text-white rounded-md max-md:w-full max-md:mt-6 md:px-[26px] py-3 md:py-4 text-base cursor-pointer'
           >
-            Book Now
+            Check Availability
           </button>
         </form>
+        {/* Common Specifications */}
+        <div className='mt-20 space-y-4'>
+          {roomCommonData.map((spec, index) => (
+            <div key={index} className='flex items-start gap-2'>
+              <img
+                src={spec.icon}
+                alt={`${spec.title}-icon`}
+                className='w-6.5'
+              />
+              <div>
+                <p className='text-base'>{spec.title}</p>
+                <p className='text-gray-500'>{spec.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        {/* description */}
+        <div className='max-w-3xl border-y border-gray-300 my-15  mt-8 py-10 text-gray-500'>
+          <p>
+            Book your perfect stay in just a few clicks! Our hotel booking app
+            lets you explore top-rated hotels, compare prices, and secure the
+            best deals with ease. Enjoy a seamless, fast, and hassle-free
+            booking experience anytime, anywhere.
+          </p>
+        </div>
+        {/* Hosted by */}
+        <div className='flex flex-col items-start gap-4 mt-6'>
+          <div className='flex gap-4'>
+            <img
+              src={room.hotel.owner.image}
+              alt='Host'
+              className='h-14 w-14 md:h-14 md:w-18 rounded-full'
+            />
+            <div>
+              <p className='text-lg md:text-xl'>Hosted By {room.hotel.name}</p>
+              <div className='flex items-center mt-2'>
+                <StarRating />
+                <p className='ml-2'>200+ reviews</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     )
   );
