@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Title from '../Components/Title';
-import { userBookingsDummyData } from '../assets/assets';
+import { assets, userBookingsDummyData } from '../assets/assets';
 
 const MyBookings = () => {
   const [bookings, setBookings] = useState(userBookingsDummyData);
@@ -20,18 +20,31 @@ const MyBookings = () => {
         {bookings.map((booking) => (
           <div
             key={booking._id}
-            className='grid grid-cols-1 md:grid-cols-[3fr_2f_1fr] w-full border-b border-gray-300 py-6 firts-border-t'
+            className='grid grid-cols-1 md:grid-cols-[3fr_2fr_1fr] w-full border-b border-gray-300 py-6 firts-border-t'
           >
             {/* Hotel details */}
-            <div>
+            <div className='flex flex-col md:flex-row'>
               <img
                 src={booking.room.images[0]}
                 alt='hotel-image'
-                className='min-md:w-44 rounded shadow object-cover'
+                className='md:w-44 rounded shadow object-cover mr-6'
               />
-              <div>
-                <p>{booking.hotel.name}</p>
-                <span>({booking.room.roomType})</span>
+              <div className='flex flex-col gap-2 max-md:mt-3 min-md:ml-4'>
+                <p className='font-playfair text-2xl'>
+                  {booking.hotel.name}
+                  <span className='font-inter text-sm'>
+                    ({booking.room.roomType})
+                  </span>
+                </p>
+                <div className='flex items-center gap-1 text-sm text-gray-500'>
+                  <img src={assets.locationIcon} alt='location' />
+                  <p>{booking.hotel.address}</p>
+                </div>
+                <div className='flex items-center gap-1 text-sm text-gray-500'>
+                  <img src={assets.guestsIcon} alt='guest' />
+                  <p>Guests:{booking.guests}</p>
+                </div>
+                <p className='text-base'>Total : ${booking.totalPrice}</p>
               </div>
             </div>
             {/* Date & Timings */}
