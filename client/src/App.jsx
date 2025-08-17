@@ -6,6 +6,7 @@ import Footer from './Components/Footer';
 import AllRooms from './Pages/AllRooms';
 import RoomDetails from './Pages/RoomDetails';
 import MyBookings from './Pages/MyBookings';
+import HotelReg from './Components/HotelReg';
 
 const App = () => {
   const isOwnerPath = useLocation().pathname.includes('admin');
@@ -13,6 +14,7 @@ const App = () => {
     <div>
       {/* condiitonal rendering of navabr.if it is not admin then show this navbar */}
       {!isOwnerPath && <Navbar />}
+      {false && <HotelReg />}
       <div className='min-h-[70vh]'>
         <Routes>
           <Route path='/' element={<Home />} />
