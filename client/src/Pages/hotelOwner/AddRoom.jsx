@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Title from '../../Components/Title';
 
 const AddRoom = () => {
   const [images, setImages] = useState({
@@ -18,7 +19,16 @@ const AddRoom = () => {
       'Pool Access': false,
     },
   });
-  return <div></div>;
+  return (
+    <form>
+      <Title
+        align='left'
+        font='outfit'
+        title='Add Room'
+        subTitle='Fill in the  details carefully and accurate room details,pricing and amenties  to enhacne the user booking experience .'
+      />
+    </form>
+  );
 };
 
 export default AddRoom;
