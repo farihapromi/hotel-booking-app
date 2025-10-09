@@ -12,7 +12,7 @@ const AddRoom = () => {
   const [inputs, setInputs] = useState({
     roomType: '',
     pricePerNight: 0,
-    amenties: {
+    amenities: {
       'Free Wifi': false,
       'Free Breakfast': false,
       'Room Service': false,
@@ -87,6 +87,28 @@ const AddRoom = () => {
             }
           />
         </div>
+      </div>
+      <p className='text-gray-800 mt-4'>Amentities</p>
+      <div className='flex flex-col flex-wrap mt-1 text-gray-400 max-w-sm'>
+        {Object.keys(inputs.amenities).map((amenity, index) => (
+          <div key={index}>
+            <input
+              type='checkbox'
+              name=''
+              id={`amentities${index + 1}`}
+              checked={inputs.amenities[amenity]}
+              onChange={() =>
+                setInputs({
+                  ...inputs,
+                  amenities: {
+                    ...inputs.amenities,
+                    [amenity]: !inputs.amenities[amenity],
+                  },
+                })
+              }
+            />
+          </div>
+        ))}
       </div>
     </form>
   );
