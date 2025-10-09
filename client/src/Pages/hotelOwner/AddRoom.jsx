@@ -107,9 +107,16 @@ const AddRoom = () => {
                 })
               }
             />
+            <label htmlFor={`amentities${index + 1}`} className='text-black'>
+              {' '}
+              {amenity}
+            </label>
           </div>
         ))}
       </div>
+      <button className='bg-primary text-white px-8 py-2 rounded-lg mt-4'>
+        Add Room
+      </button>
     </form>
   );
 };
