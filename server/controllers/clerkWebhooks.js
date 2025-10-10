@@ -20,5 +20,27 @@ const clerkWebhooks = async (req, res) => {
       username: data.first_name + ' ' + data.last_name,
       image: data.image - url,
     };
-  } catch (error) {}
+    //switch case for difernce events
+    switch (type) {
+      case 'user.created': {
+        await User.created(userData);
+        break;
+      }
+      case 'user.updated': {
+        await User.findByIdAndUpdate(data.id, userData);
+        break;
+      }
+      case 'user.deleted': {
+        await User.findByIdAndDelete(data.id);
+        break;
+      }
+      default:
+        break;
+    }
+    res.json({ success: true, message: 'Webhook recieved' });
+  } catch (error) {
+    console.log(error.message);
+    res.json({ succes: false, message: error.message });
+  }
 };
+export default clerkWebhooks;
