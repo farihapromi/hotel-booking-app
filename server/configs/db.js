@@ -5,7 +5,7 @@ const connectDB = async () => {
       `${process.env.MONGO_URI}/hotel-booking`
     );
 
-    console.log(`✅ MongoDB connected: ${conn.connection.host}`);
+    console.log(`✅ MongoDB connected: `);
   } catch (error) {
     console.log(error.message);
   }
