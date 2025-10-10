@@ -7,6 +7,8 @@ import { clerkMiddleware } from '@clerk/express';
 connectDB();
 const app = express();
 app.use(cors()); //connect backend to frontend
+//middleware
+app.use(express.json());
 app.use(clerkMiddleware());
 
 app.get('/', (req, res) => res.send('Api is Working'));
