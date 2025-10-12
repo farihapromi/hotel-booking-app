@@ -1,4 +1,5 @@
 import Booking from '../models/Booking';
+import Room from '../models/Room';
 
 const checkAvailability = async ({ checkInDate, checkOutDate, room }) => {
   try {
@@ -24,6 +25,43 @@ export const checkAvailabiltyAPI = async (req, res) => {
       room,
     });
     res.json({ success: true, isAvaiable });
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
+};
+//api to create new booking
+//post api.bookings/book
+export const createBooking = async (req, res) => {
+  try {
+    const { room, checkInDate, checkOutDate, guests } = req.body;
+    const user = req.user._id;
+    const isAvailable = await checkAvailability({
+      checkInDate,
+      checkOutDate,
+      room,
+    });
+    if (!isAvailable) {
+      return res.json({ success: false, message: 'Room is not avaibale' });
+    }
+    //get totalprice for room
+    const roomData = await Room.findById(room).populate('hotel');
+    let totalPrice = roomData.pricePerNight;
+    //calcuate total price based on nights
+    const checkIn = new Date(checkInDate);
+    const checkOut = new Date(checkOutDate);
+    const timeDiff = checkOut.getTime() - checkIn.getTime();
+    const nights = Math.ceil(timeDiff / (1000 * 3600 * 24));
+    totalPrice *= nights;
+    const booking = await Booking.create({
+      user,
+      room,
+      hotel: roomData.hotel._id,
+      guests: +guests, //convert stirng to num +
+      checkInDate,
+      checkOutDate,
+      totalPrice,
+    });
+    res.json({ success: true, message: 'Boking created Successfully' });
   } catch (error) {
     res.json({ success: false, message: error.message });
   }
