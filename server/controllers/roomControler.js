@@ -59,6 +59,11 @@ export const getOwnerRooms = async (req, res) => {
 //Api to toggle rooim avaiablity
 export const toggleRoomAvaiablity = async (req, res) => {
   try {
+    const { roomId } = req.body;
+    const roomData = await Room.findById(roomId);
+    roomData.isAvaiable = !roomData.isAvaiable;
+    await roomData.save();
+    res.json({ success: true, message: 'Room Avaiabilty updated ' });
   } catch (error) {
     res.json({ success: false, message: error.message });
   }
