@@ -12,7 +12,14 @@ export const AppProvider = ({ children }) => {
   const [isOwner, setIsOwner] = useState(false);
   const [showHotel, setShowHotelReg] = useState(false);
 
-  const value = {};
+  const value = {
+    currency,
+    navigate,
+    user,
+    getToken,
+    isOwner,
+    showHotel,
+  };
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
 export const useAppContext = () => useContext(AppContext);
