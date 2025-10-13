@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser, useAuth } from '@clerk/clerk-react';
 import { toast } from 'react-hot-toast';
@@ -31,7 +31,11 @@ export const AppProvider = ({ children }) => {
       toast.error(error.message);
     }
   };
-
+  useEffect(() => {
+    if (user) {
+      fetchUser();
+    }
+  }, [user]);
   const value = {
     currency,
     navigate,
@@ -42,6 +46,8 @@ export const AppProvider = ({ children }) => {
     axios,
     setShowHotelReg,
     showHotel,
+    searchedCities,
+    setSeachedCities,
   };
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
