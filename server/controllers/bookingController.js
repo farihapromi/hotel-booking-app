@@ -94,4 +94,14 @@ export const getHotelBookings = async (req, res) => {
     .populate('room hotel user')
     .sort({ createdAt: -1 });
   //total bookings
+  const totalBookings = bookings.length;
+  //total revenue
+  const totalRevenue = bookings.reduce(
+    (acc, booking) => acc + booking.totalPrice,
+    0
+  );
+  res.json({
+    success: true,
+    dashbordData: { totalBookings, totalRevenue, bookings },
+  });
 };
