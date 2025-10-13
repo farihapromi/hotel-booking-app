@@ -61,8 +61,19 @@ export const createBooking = async (req, res) => {
       checkOutDate,
       totalPrice,
     });
-    res.json({ success: true, message: 'Boking created Successfully' });
+    res.json({ success: true, booking });
   } catch (error) {
-    res.json({ success: false, message: error.message });
+    console.log(error);
+    res.json({ success: false, message: 'Failed to create booking' });
   }
+};
+//api to get all booking for a use
+//GET /api/bookings/user
+export const getUserBookings = async (req, res) => {
+  try {
+    const user = req.user._id;
+    const booking = (
+      await Booking.find({ user }).populate('room hotel')
+    ).toSorted({ createdAt: -1 });
+  } catch (error) {}
 };
