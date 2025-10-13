@@ -1,5 +1,6 @@
-import Booking from '../models/Booking';
-import Room from '../models/Room';
+import Booking from '../models/Booking.js';
+import Room from '../models/Room.js';
+import Hotel from '../models/Hotel.js';
 
 const checkAvailability = async ({ checkInDate, checkOutDate, room }) => {
   try {
@@ -72,8 +73,25 @@ export const createBooking = async (req, res) => {
 export const getUserBookings = async (req, res) => {
   try {
     const user = req.user._id;
-    const booking = (
-      await Booking.find({ user }).populate('room hotel')
-    ).toSorted({ createdAt: -1 });
-  } catch (error) {}
+    const bookings = (await Booking.find({ user }).populate('room hotel')).sort(
+      {
+        createdAt: -1,
+      }
+    );
+    res.json({ success: true, bookings });
+  } catch (error) {
+    res.json({ success: false, message: 'Failed to fetch booking' });
+  }
+};
+
+//
+export const getHotelBookings = async (req, res) => {
+  const hotel = await Hotel.findOne({ owner: req.auth.userId });
+  if (!hotel) {
+    return res.json({ success: false, message: 'No Hotel found' });
+  }
+  const bookings = await Booking.find({ hotel: hotel._id })
+    .populate('room hotel user')
+    .sort({ createdAt: -1 });
+  //total bookings
 };
