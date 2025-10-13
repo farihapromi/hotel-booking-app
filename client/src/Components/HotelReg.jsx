@@ -4,8 +4,9 @@ import { useAppContext } from '../Context/AppContext';
 
 const HotelReg = () => {
   const { setShowHotelReg } = useAppContext();
+  //set allm state varibale for form data
   const [hotelName, setHotelName] = useState('');
-  const [phone, setPhone] = useState('');
+  const [contact, setContact] = useState('');
   const [address, setAddress] = useState('');
   const [city, setCity] = useState('');
 
@@ -36,10 +37,12 @@ const HotelReg = () => {
             </label>
             <input
               type='text'
-              id='name'
+              id='hotelName'
               placeholder='Type Here'
               className='border border-gray-200 rounded w-full px-3 py-3 mt-1 outline-indigo-500 font-light'
               required
+              onChange={(e) => setHotelName(e.target.value)}
+              value={hotelName}
             />
           </div>
           {/* phone */}
@@ -53,6 +56,8 @@ const HotelReg = () => {
               placeholder='Type Here'
               className='border border-gray-200 rounded w-full px-3 py-3 mt-1 outline-indigo-500 font-light'
               required
+              onChange={(e) => setContact(e.target.value)}
+              value={contact}
             />
           </div>
           {/* Address */}
@@ -66,6 +71,8 @@ const HotelReg = () => {
               placeholder='Type Here'
               className='border border-gray-200 rounded w-full px-3 py-3 mt-1 outline-indigo-500 font-light'
               required
+              onChange={(e) => setAddress(e.target.value)}
+              value={address}
             />
           </div>
           {/* select city dropdown */}
@@ -77,6 +84,8 @@ const HotelReg = () => {
               id='city'
               className='border border-gray-200 rounded w-full px-3 py-3 mt-2 outline-indigo-500 font-light'
               required
+              onChange={(e) => setCity(e.target.value)}
+              value={city}
             >
               <option value=''>Select city</option>
               {cities.map((city) => (
