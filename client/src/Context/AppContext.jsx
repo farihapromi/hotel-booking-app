@@ -11,6 +11,13 @@ export const AppProvider = ({ children }) => {
   const { getToken } = useAuth;
   const [isOwner, setIsOwner] = useState(false);
   const [showHotel, setShowHotelReg] = useState(false);
+  const fetchUser = async () => {
+    try {
+      const { data } = await axios.get('/api/user', {
+        headers: { Authorization: `Bearer ${await getToken()}` },
+      });
+    } catch (error) {}
+  };
 
   const value = {
     currency,
@@ -18,6 +25,9 @@ export const AppProvider = ({ children }) => {
     user,
     getToken,
     isOwner,
+    setIsOwner,
+    axios,
+    setShowHotelReg,
     showHotel,
   };
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
