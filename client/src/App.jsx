@@ -11,12 +11,14 @@ import Layout from './Pages/hotelOwner/Layout';
 import Dashboard from './Pages/hotelOwner/Dashboard';
 import AddRoom from './Pages/hotelOwner/AddRoom';
 import ListRoom from './Pages/hotelOwner/ListRoom';
+import { Toaster } from 'react-hot-toast';
 
 const App = () => {
   const isOwnerPath = useLocation().pathname.includes('admin');
   return (
     <div>
       {/* condiitonal rendering of navabr.if it is not admin then show this navbar */}
+      <Toaster />
       {!isOwnerPath && <Navbar />}
       {false && <HotelReg />}
       <div className='min-h-[70vh]'>
