@@ -12,15 +12,17 @@ import Dashboard from './Pages/hotelOwner/Dashboard';
 import AddRoom from './Pages/hotelOwner/AddRoom';
 import ListRoom from './Pages/hotelOwner/ListRoom';
 import { Toaster } from 'react-hot-toast';
+import { useAppContext } from './Context/AppContext';
 
 const App = () => {
-  const isOwnerPath = useLocation().pathname.includes('admin');
+  const isOwnerPath = useLocation().pathname.includes('owner');
+  const { showHotelReg } = useAppContext();
   return (
     <div>
       {/* condiitonal rendering of navabr.if it is not admin then show this navbar */}
       <Toaster />
       {!isOwnerPath && <Navbar />}
-      {false && <HotelReg />}
+      {showHotelReg && <HotelReg />}
       <div className='min-h-[70vh]'>
         <Routes>
           <Route path='/' element={<Home />} />
