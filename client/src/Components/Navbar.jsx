@@ -21,10 +21,10 @@ const Navbar = () => {
     { name: 'Hotel', path: '/rooms' },
     { name: 'Experience', path: '/' },
     { name: 'About', path: '/' },
-    {
-      name: 'Dashboard',
-      path: '/dashboard',
-    },
+    // {
+    //   name: 'Dashboard',
+    //   path: '/dashboard',
+    // },
   ];
 
   const [isScrolled, setIsScrolled] = useState(false);
@@ -87,12 +87,12 @@ const Navbar = () => {
         ))}
         {user && (
           <button
-            onClick={() =>
-              isOwner ? navigate('/owner') : setShowHotelReg(true)
-            }
             className={`border px-4 py-1 text-sm font-light rounded-full cursor-pointer ${
               isScrolled ? 'text-black' : 'text-white'
             } transition-all`}
+            onClick={() =>
+              isOwner ? navigate('/owner') : setShowHotelReg(true)
+            }
           >
             {isOwner ? 'Dashboard' : 'List your Holel'}
           </button>
@@ -170,12 +170,17 @@ const Navbar = () => {
           </a>
         ))}
 
-        <button
-          onClick={() => navigate('/owner')}
-          className='border px-4 py-1 text-sm font-light rounded-full cursor-pointer transition-all'
-        >
-          Dashboard
-        </button>
+        {user && (
+          <button
+            onClick={() =>
+              isOwner ? navigate('/owner') : setShowHotelReg(true)
+            }
+            className='border px-4 py-1 text-sm font-light rounded-full cursor-pointer transition-all'
+          >
+            {isOwner ? 'Dashboard' : 'List your Hotel'}
+          </button>
+        )}
+
         {!user && (
           <button
             onClick={openSignIn}

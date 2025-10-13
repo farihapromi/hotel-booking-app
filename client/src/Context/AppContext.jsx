@@ -1,4 +1,5 @@
 import axios from 'axios';
+import React from 'react';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser, useAuth } from '@clerk/clerk-react';
@@ -9,9 +10,9 @@ export const AppProvider = ({ children }) => {
   const currency = import.meta.env.VITE_CURRENCY || '$';
   const navigate = useNavigate();
   const { user } = useUser();
-  const { getToken } = useAuth;
+  const { getToken } = useAuth();
   const [isOwner, setIsOwner] = useState(false);
-  const [showHotel, setShowHotelReg] = useState(false);
+  const [showHotelReg, setShowHotelReg] = useState(false);
   const [searchedCities, setSeachedCities] = useState([]);
   const fetchUser = async () => {
     try {
@@ -45,7 +46,7 @@ export const AppProvider = ({ children }) => {
     setIsOwner,
     axios,
     setShowHotelReg,
-    showHotel,
+    showHotelReg,
     searchedCities,
     setSeachedCities,
   };
