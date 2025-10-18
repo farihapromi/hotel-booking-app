@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import Title from '../../Components/Title';
 import { assets } from '../../assets/assets';
+import { useAppContext } from '../../Context/AppContext';
 
 const AddRoom = () => {
+  const { axios, getToken } = useAppContext();
+
   const [images, setImages] = useState({
     1: null,
     2: null,
@@ -20,8 +23,23 @@ const AddRoom = () => {
       'Pool Access': false,
     },
   });
+  const [loading, setLoading] = useState(false);
+  const onSubmitHandler = async (e) => {
+    e.preventDefault();
+    //check if inputs are filled
+    if (
+      !inputs.roomType ||
+      !inputs.pricePerNight ||
+      !inputs.amenities ||
+      !Object.values(images).some((image) => image)
+    ) {
+      toast.error('Please fill in all the details');
+      return;
+    }
+    setLoading(true);
+  };
   return (
-    <form>
+    <form onSubmit={onSubmitHandler}>
       <Title
         align='left'
         font='outfit'
