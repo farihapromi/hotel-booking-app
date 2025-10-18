@@ -37,6 +37,39 @@ const AddRoom = () => {
       return;
     }
     setLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append('roomType', inputs.roomType);
+      formData.append('pricePerNight', inputs.pricePerNight);
+      const amenities = Object.keys(inputs.amenities).filter(
+        (key) => inputs.amenities[key]
+      );
+      formData.append('amenities', JSON.stringify(amenities));
+      //Adding imagfes to formdata
+
+      Object.keys(images).forEach((key) => {
+        images[key] && formData.append('images', images[key]);
+      });
+      const { data } = await axios.post('/api/rooms', formData, {
+        headers: {
+          Authorization: `Bearer ${await getToken}`,
+        },
+      });
+      if (data.success) {
+        toast.succes(data.message);
+        setInputs({
+          roomType: '',
+          pricePerNight: 0,
+          amenities: {
+            'Free Wifi': false,
+            'Free Breakfast': false,
+            'Room Service': false,
+            'Mountain View': false,
+            'Pool Access': false,
+          },
+        });
+      }
+    } catch (error) {}
   };
   return (
     <form onSubmit={onSubmitHandler}>
