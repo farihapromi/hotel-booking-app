@@ -2,22 +2,24 @@ import React from 'react';
 import { assets, cities } from '../assets/assets';
 import { useAppContext } from '../Context/AppContext';
 import toast from 'react-hot-toast';
+import { useState } from 'react';
 
 const HotelReg = () => {
   const { setShowHotelReg, axios, getToken, setIsOwner } = useAppContext();
   //set allm state varibale for form data
-  const [hotelName, setHotelName] = useState('');
+  const [name, setHotelName] = useState('');
   const [contact, setContact] = useState('');
   const [address, setAddress] = useState('');
   const [city, setCity] = useState('');
   const handleRegisterForm = async (e) => {
-    e.preventDefault();
     try {
-      const { data } = axios.post(
-        '/api/hotels',
-        { hotelName, contact, address, city },
+      e.preventDefault();
+      const { data } = await axios.post(
+        '/api/hotels/',
+        { name, contact, address, city },
         { headers: { Authorization: `Bearer ${await getToken()}` } }
       );
+
       if (data.success) {
         toast.success(data.message);
         setIsOwner(true);
@@ -39,7 +41,7 @@ const HotelReg = () => {
         action=''
         className='flex bg-white rounded-xl max-w-4xl max-md:mx-2'
         onSubmit={handleRegisterForm}
-        onClick={() => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
       >
         <img
           src={assets.regImage}
@@ -62,12 +64,12 @@ const HotelReg = () => {
             </label>
             <input
               type='text'
-              id='hotelName'
+              id='name'
               placeholder='Type Here'
               className='border border-gray-200 rounded w-full px-3 py-3 mt-1 outline-indigo-500 font-light'
               required
               onChange={(e) => setHotelName(e.target.value)}
-              value={hotelName}
+              value={name}
             />
           </div>
           {/* phone */}

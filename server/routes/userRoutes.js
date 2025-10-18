@@ -6,5 +6,6 @@ import {
 } from '../controllers/userController.js';
 const userRouter = express.Router();
 userRouter.get('/', protect, getUserData);
+
 userRouter.post('/store-recent-search', protect, storeRecnetSearchedCities);
 export default userRouter;

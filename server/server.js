@@ -1,31 +1,38 @@
 import express from 'express';
-import 'dotenv/config';
 import cors from 'cors';
+import 'dotenv/config';
+import { clerkMiddleware, requireAuth } from '@clerk/express';
 import connectDB from './configs/db.js';
-import { clerkMiddleware } from '@clerk/express';
-import clerkWebhooks from './controllers/clerkWebhooks.js';
+import connectCloudinary from './configs/cloudinary.js';
+
+// Routes & controllers
 import userRouter from './routes/userRoutes.js';
 import hotelRouter from './routes/hotelRoutes.js';
-import connectCloudinary from './configs/cloudinary.js';
 import roomRouter from './routes/roomRoutes.js';
 import bookingRouter from './routes/bookingRoutes.js';
+import { syncUser } from './controllers/syncUserController.js';
 
 connectDB();
-connectCloudinary(); //clodunary for image uploads,store images
+connectCloudinary();
+
 const app = express();
-app.use(cors()); //connect backend to frontend
-//middleware
+app.use(cors());
 app.use(express.json());
+
+//  Clerk middleware MUST be first
 app.use(clerkMiddleware());
-//API to lsten clerk webhook
-app.use('/api/clerk', clerkWebhooks);
+
+// ✅ Route to sync Clerk user to MongoDB
+app.post('/api/sync-user', requireAuth(), syncUser);
+
+// other routes
 app.use('/api/user', userRouter);
 app.use('/api/hotels', hotelRouter);
 app.use('/api/rooms', roomRouter);
-app.use('api//bookings', bookingRouter);
+app.use('/api/bookings', bookingRouter);
 
-app.get('/', (req, res) => res.send('Api is Working'));
+// ✅ Test
+app.get('/', (req, res) => res.send('API is Working'));
+
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is listening on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
