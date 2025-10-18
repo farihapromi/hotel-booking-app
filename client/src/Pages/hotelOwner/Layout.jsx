@@ -6,11 +6,11 @@ import { useAppContext } from '../../Context/AppContext';
 
 const Layout = () => {
   const { isOwner, navigate } = useAppContext();
-  useEffect(() => {
-    if (!isOwner) {
-      navigate('/');
-    }
-  }, [isOwner]);
+  // useEffect(() => {
+  //   if (!isOwner) {
+  //     navigate('/');
+  //   }
+  // }, [isOwner]);
   return (
     <div className='flex flex-col  h-screen'>
       <Navbar />

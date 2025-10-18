@@ -77,7 +77,7 @@ export const AppProvider = ({ children }) => {
           }
         );
 
-        console.log('✅ User synced to MongoDB');
+        //console.log('✅ User synced to MongoDB');
 
         // 2️⃣ Fetch user data from backend
         const { data } = await axios.get('/api/user', {
