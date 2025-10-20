@@ -1,31 +1,41 @@
-import React from 'react'
-import { roomsDummyData } from '../assets/assets'
-import HotelCard from './HotelCard'
-import Title from './Title'
-import { useNavigate } from 'react-router-dom'
+import React from 'react';
+import { roomsDummyData } from '../assets/assets';
+import HotelCard from './HotelCard';
+import Title from './Title';
+import { useNavigate } from 'react-router-dom';
+import { useAppContext } from '../Context/AppContext';
 
 const FeatureDestination = () => {
-  const navigate=useNavigate()
+  const { rooms, navigate } = useAppContext();
+
   return (
     <div className='flex flex-col items-center px-6 md:px-16 lg:px-24 bg-slate-50 py-20'>
-      <Title title='Featured Destination'
-      subTitle='Discover our handpicked selection of exceptional properties around the world, offering unparalleled luxury and unforgettable experiences'
+      <Title
+        title='Featured Destination'
+        subTitle='Discover our handpicked selection of exceptional properties around the world, offering unparalleled luxury and unforgettable experiences'
       />
-      <div className="flex flex-wrap justify-center gap-6">
-  {roomsDummyData.slice(0, 4).map((room, index) => (
-    <HotelCard key={room._id} room={room} index={index} />
-  ))}
-</div>
-{/* 
+      {rooms.length > 0 ? (
+        <div className='flex flex-wrap justify-center gap-6'>
+          {rooms.slice(0, 4).map((room, index) => (
+            <HotelCard key={room._id} room={room} index={index} />
+          ))}
+        </div>
+      ) : (
+        <p className='text-gray-500 mt-6'>Loading featured rooms...</p>
+      )}
+      {/* 
 Button */}
-<button onClick={()=>{navigate('/rooms'); scrollTo(0,0)}}
- className='bg-blue-400 text-white  px-4 py-4 mt-8  my-16 rounded-lg hover:bg-blue-600 transition-all cursor-pointer'>
-  View All Destinations
-</button>
-
-      
+      <button
+        onClick={() => {
+          navigate('/rooms');
+          scrollTo(0, 0);
+        }}
+        className='bg-blue-400 text-white  px-4 py-4 mt-8  my-16 rounded-lg hover:bg-blue-600 transition-all cursor-pointer'
+      >
+        View All Destinations
+      </button>
     </div>
-  )
-}
+  );
+};
 
-export default FeatureDestination
+export default FeatureDestination;
