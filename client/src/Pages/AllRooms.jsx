@@ -7,38 +7,20 @@ import { useAppContext } from '../Context/AppContext';
 
 const AllRooms = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { rooms, navigate, currency } = useAppContext();
+  const { rooms = roomsDummyData, currency } = useAppContext(); // fallback
 
   const [openFilters, setOpenFilters] = useState(false);
 
+  // SINGLE-SELECTION state (only one item can be selected per filter)
   const [selectedFilters, setSelectedFilters] = useState({
-    roomType: [],
-    priceRange: [],
+    roomType: '', // single selection
+    priceRange: '', // single selection
   });
-  cont[(selectedSort, setSelectedSort)] = useState('');
 
-  const [selectedRoomTypes, setSelectedRoomTypes] = useState([]);
-  const [selectedPriceRanges, setSelectedPriceRanges] = useState([]);
-  const [selectedSortOption, setSelectedSortOption] = useState('');
-
-  const handleRoomTypeChange = (checked, label) => {
-    setSelectedRoomTypes((prev) =>
-      checked ? [...prev, label] : prev.filter((item) => item !== label)
-    );
-  };
-
-  const handlePriceRangeChange = (checked, label) => {
-    setSelectedPriceRanges((prev) =>
-      checked ? [...prev, label] : prev.filter((item) => item !== label)
-    );
-  };
-
-  const handleSortOptionChange = (checked, label) => {
-    if (checked) setSelectedSortOption(label);
-  };
+  const [selectedSort, setSelectedSort] = useState('');
 
   const roomTypes = ['Single Bed', 'Double Bed', 'Luxury Bed', 'Family Suite'];
-  const PriceRanges = [
+  const priceRanges = [
     '0 to 500',
     '500 to 1000',
     '1000 to 2000',
@@ -47,161 +29,131 @@ const AllRooms = () => {
   const sortOptions = [
     'Price Low to High',
     'Price High to Low',
-    'Newsest First',
+    'Newest First',
   ];
 
-  const handleFilterChange = (checked, value, type) => {
-    setSelectedFilters((prevFilters) => {
-      const updatedFilters = { ...prevFilters };
-      if (checked) {
-        updatedFilters[type].push(value);
-      } else {
-        updatedFilters[type] = updatedFilters[type].filter(
-          (item) => item !== value
-        );
-        return updatedFilters;
-      }
-    });
+  // Handle filter checkbox change (single selection only)
+  const handleFilterChange = (value, type) => {
+    setSelectedFilters((prev) => ({
+      ...prev,
+      [type]: prev[type] === value ? '' : value, // toggle selection
+    }));
   };
-  const handleSortChange = (sortOption) => {
-    setSelectedSort(sortOption);
-    //funciton to check if a room mathec the selcted room types
-    const mathcesRoomType = (room) => {
-      return (
-        setSelectedFilters.roomType.length === 0 ||
-        selectedFilters.roomType.includes(room.roomType)
-      );
-    };
-  };
-  //fucniton to check if a room matches seletced price ranges
+
+  const handleSortChange = (option) => setSelectedSort(option);
+
+  const matchesRoomType = (room) =>
+    !selectedFilters.roomType || room.roomType === selectedFilters.roomType;
+
   const matchesPriceRange = (room) => {
-    return (
-      selectedFilters.priceRange.length === 0 ||
-      selectedFilters.priceRange.some((range) => {
-        const [min, max] = range.split(' to ').map(Number);
-        return room.pricePerNight >= min && room.pricePerNight <= max;
-      })
-    );
+    if (!selectedFilters.priceRange) return true;
+    const [min, max] = selectedFilters.priceRange.split(' to ').map(Number);
+    return room.pricePerNight >= min && room.pricePerNight <= max;
   };
-  const sortRooms = (a, b) => {
-    if (selectedSort === 'Price Low to High') {
-      return a.pricePerNight - b.pricePerNight;
-    }
-    if (selectedSort === 'Price High to Low  ') {
-      return b.pricePerNight - a.pricePerNight;
-    }
-    if (selectedSort === 'Newest First ') {
-      return new Date(b.createdAt) - new Date(a.createdAt);
-    }
-    return 0;
-  };
-  //filter destination
+
   const filterDestination = (room) => {
     const destination = searchParams.get('destination');
     if (!destination) return true;
     return room.hotel.city.toLowerCase().includes(destination.toLowerCase());
   };
-  //filter and sort room bases on selcted fitler and srt options
-  const filteredRooms = useMemo(() => {
-    return rooms
-      .filter(
-        (room) =>
-          mathcesRoomType(room) &&
-          matchesPriceRange(room) &&
-          filterDestination(room)
-      )
-      .sort(sortRooms);
-  }, [rooms, selectedFilters, selectedSort, searchParams]);
-  //clear all fitler
+
+  const sortRooms = (a, b) => {
+    if (selectedSort === 'Price Low to High')
+      return a.pricePerNight - b.pricePerNight;
+    if (selectedSort === 'Price High to Low')
+      return b.pricePerNight - a.pricePerNight;
+    if (selectedSort === 'Newest First')
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    return 0;
+  };
+
+  const filteredRooms = useMemo(
+    () =>
+      rooms
+        .filter(
+          (room) =>
+            matchesRoomType(room) &&
+            matchesPriceRange(room) &&
+            filterDestination(room)
+        )
+        .sort(sortRooms),
+    [rooms, selectedFilters, selectedSort, searchParams]
+  );
+
   const clearFilters = () => {
-    setSelectedFilters({
-      roomType: [],
-      priceRange: [],
-    });
+    setSelectedFilters({ roomType: '', priceRange: '' });
     setSelectedSort('');
     setSearchParams({});
   };
 
   return (
     <div className='flex flex-col-reverse lg:flex-row items-start justify-between pt-28 md:pt-35 px-6 md:px-16 lg:px-24 xl:px-32'>
-      <div>
-        <div className='flex flex-col items-start text-left'>
+      {/* Room Listings */}
+      <div className='flex-1'>
+        <div className='flex flex-col items-start text-left mb-8'>
           <h1 className='font-bold text-4xl font-playfair text-blue-400'>
             Hotel Rooms
           </h1>
-          <p className='tetx-sm md:text-base text-black mt-2 max-w-174'>
+          <p className='text-sm md:text-base text-black mt-2 max-w-174'>
             Take advantage of our limited-time offers and special packages to
             enhance your stay and create unforgettable memories.
           </p>
         </div>
 
-        {/* room card */}
-        {roomsDummyData.map((rooms) => (
-          <RoomCard key={rooms._id} rooms={rooms} />
-        ))}
+        {filteredRooms.length > 0 ? (
+          filteredRooms.map((room) => <RoomCard key={room._id} rooms={room} />)
+        ) : (
+          <p className='text-gray-500'>
+            No rooms found for the selected filters.
+          </p>
+        )}
       </div>
 
-      {/* filters */}
+      {/* Filters Sidebar */}
       <div className='bg-white w-80 border border-gray-300 text-gray-600 max-lg:mb-8 min-lg:mt-16'>
-        <div
-          className={`flex items-center justify-between px-5 py-3 min-lg:border-b border-gray-300 ${
-            openFilters && 'border-b'
-          }`}
-        >
+        <div className='flex items-center justify-between px-5 py-3 border-b border-gray-300'>
           <p className='text-base font-medium text-gray-800'>FILTERS</p>
-          <div className='textt-xs cursor-pointer'>
-            <span
-              onClick={() => setOpenFilters(!openFilters)}
-              className='lg:hidden'
-            >
-              {openFilters ? 'HIDE' : 'SHOW'}
-            </span>
-            <span className='hidden lg:block'>CLEAR</span>
-          </div>
+          <span
+            onClick={clearFilters}
+            className='text-xs cursor-pointer text-blue-400'
+          >
+            CLEAR
+          </span>
         </div>
-        {/* filters items */}
-        <div
-          className={`${
-            openFilters ? 'h-auto' : 'h-0 lg:h-auto'
-          } overflow-hidden transition-all duration-700`}
-        >
-          <div className='px-5 pt-5'>
-            <p className='font-medium text-gray-800 pb-2'>Popular Filters</p>
-            {roomTypes.map((room) => (
-              <CheckBox
-                key={room}
-                label={room}
-                selected={selectedRoomTypes.includes(room)}
-                onChange={handleRoomTypeChange}
-              />
-            ))}
-          </div>
-          {/* for price */}
-          <div className='px-5 pt-5 text-blue-400 font-bold'>
-            <p className='font-medium text-gray-800 pb-2 text-xl'>
-              Price Ranges
-            </p>
-            {PriceRanges.map((price) => (
-              <CheckBox
-                key={price}
-                label={`$ ${price}`}
-                selected={selectedPriceRanges.includes(`$ ${price}`)}
-                onChange={handlePriceRangeChange}
-              />
-            ))}
-          </div>
-          {/* sort options */}
-          <div className='px-5 pt-5 pb-7'>
-            <p className='font-medium text-gray-800 pb-2'>Sort By</p>
-            {sortOptions.map((option) => (
-              <RadioButton
-                key={option}
-                label={option}
-                selected={selectedSortOption === option}
-                onChange={handleSortOptionChange}
-              />
-            ))}
-          </div>
+
+        <div className='px-5 pt-5'>
+          {/* Room Type Filters */}
+          <p className='font-medium text-gray-800 pb-2'>Room Type</p>
+          {roomTypes.map((room, index) => (
+            <CheckBox
+              key={index}
+              label={room}
+              selected={selectedFilters.roomType === room} // only one selected
+              onChange={() => handleFilterChange(room, 'roomType')}
+            />
+          ))}
+
+          {/* Price Filters */}
+          <p className='font-medium text-gray-800 pb-2 pt-5'>Price Range</p>
+          {priceRanges.map((range, index) => (
+            <CheckBox
+              key={index}
+              label={range}
+              selected={selectedFilters.priceRange === range} // only one selected
+              onChange={() => handleFilterChange(range, 'priceRange')}
+            />
+          ))}
+
+          {/* Sort Options */}
+          <p className='font-medium text-gray-800 pb-2 pt-5'>Sort By</p>
+          {sortOptions.map((option) => (
+            <RadioButton
+              key={option}
+              label={option}
+              selected={selectedSort === option}
+              onChange={() => handleSortChange(option)}
+            />
+          ))}
         </div>
       </div>
     </div>
