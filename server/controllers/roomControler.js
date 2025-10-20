@@ -3,38 +3,36 @@ import { v2 as cloudinary } from 'cloudinary';
 import Room from '../models/Room.js';
 import upload from '../middleware/uploadMiddleware.js';
 
+import streamifier from 'streamifier'; // npm install streamifier
+import fs from 'fs';
+
 export const createRoom = async (req, res) => {
   try {
     const { roomType, pricePerNight, amenities } = req.body;
 
-    const hotel = await Hotel.findOne({ owner: req.auth.userId });
+    const userId = req.auth().userId; // Clerk v4+ requires req.auth()
+    const hotel = await Hotel.findOne({ owner: userId });
     if (!hotel) return res.json({ success: false, message: 'No hotel found' });
 
     if (!req.files || req.files.length === 0)
-      return res.json({
-        success: false,
-        message: 'Please upload at least one image',
-      });
-    console.log('Cloudinary config:', cloudinary.config());
+      return res.json({ success: false, message: 'Upload at least 1 image' });
 
-    // const uploadImages = req.files.map(async (file) => {
-    //   const response = await cloudinary.uploader.upload(file.path, {
-    //     folder: 'hotel_rooms',
-    //   });
-    //   return response.secure_url;
-    // });
-    const uploadImages = req.files.map(async (file) => {
-      const result = await cloudinary.uploader.upload_stream(
-        { folder: 'hotel_rooms' },
-        (error, result) => {
-          if (error) throw error;
-          return result;
-        }
-      );
-      // Or simpler: use `upload_stream` with a Promise wrapper
-    });
-
-    const images = await Promise.all(uploadImages);
+    // Upload to Cloudinary
+    const images = await Promise.all(
+      req.files.map(
+        (file) =>
+          new Promise((resolve, reject) => {
+            const stream = cloudinary.uploader.upload_stream(
+              { folder: 'hotel_rooms' },
+              (err, result) => {
+                if (err) return reject(err);
+                resolve(result.secure_url);
+              }
+            );
+            streamifier.createReadStream(file.buffer).pipe(stream);
+          })
+      )
+    );
 
     const room = await Room.create({
       hotel: hotel._id,
@@ -44,12 +42,12 @@ export const createRoom = async (req, res) => {
       images,
     });
 
-    res.json({ success: true, message: 'Room created successfully', room });
-  } catch (error) {
-    res.json({ success: false, message: error.message });
+    res.json({ success: true, message: 'Room created', room });
+  } catch (err) {
+    console.error('Room creation error:', err);
+    res.json({ success: false, message: err.message });
   }
 };
-
 //api to get all room
 export const getRooms = async (req, res) => {
   try {

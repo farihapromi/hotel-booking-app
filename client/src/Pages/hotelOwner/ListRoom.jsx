@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { roomsDummyData } from '../../assets/assets';
 import Title from '../../Components/Title';
+import { useAppContext } from '../../Context/AppContext';
 
 const ListRoom = () => {
   const [rooms, setRooms] = useState(roomsDummyData);
+  const { axios, getToken, user } = useAppContext();
+
   return (
     <div>
       <Title
