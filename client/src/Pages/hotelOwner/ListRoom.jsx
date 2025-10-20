@@ -27,11 +27,28 @@ const ListRoom = () => {
 
   //toggle room avaibality
   const toggleAvailabilty = async (roomId) => {
-    const { data } = await axios.post('/api/rooms/toggle-avaialbilty', roomId, {
-      headers: {
-        Authorization: `Bearer ${await getToken()}`,
-      },
-    });
+    const { data } = await axios.post(
+      '/api/rooms/toggle-availabilty',
+      { roomId },
+      {
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
+        },
+      }
+    );
+    if (data.success) {
+      toast.success(data.message);
+      // fetchRooms();
+      setRooms((prev) =>
+        prev.map((room) =>
+          room._id === roomId
+            ? { ...room, isAvailable: !room.isAvailable }
+            : room
+        )
+      );
+    } else {
+      toast.error(data.message);
+    }
   };
 
   useEffect(() => {
@@ -79,22 +96,18 @@ const ListRoom = () => {
                   {item.pricePerNight}
                 </td>
                 <td className='py-3 px-4 text-red-500 border-t border-gray-300 text-center'>
+                  <input
+                    type='checkbox'
+                    id={`toggle-${item._id}`} // unique id per room
+                    className='sr-only peer'
+                    checked={item.isAvailable}
+                    onChange={() => toggleAvailabilty(item._id)}
+                  />
                   <label
-                    htmlFor=''
-                    className='relative inline-flex items-center cursor-pointer text-gray-900 gap-3'
+                    htmlFor={`toggle-${item._id}`} // links label to input
+                    className='relative inline-flex items-center w-12 h-7 cursor-pointer bg-slate-300 rounded-full peer-checked:bg-blue-700 transition-colors duration-200'
                   >
-                    <input
-                      type='checkbox'
-                      name=''
-                      id=''
-                      className='sr-only peer'
-                      checked={item.isAvailable}
-                    />
-                    <div className='w-12 h-7 bg-slate-300 rounded-full peer peer-checked:bg-blue-700 transition-colors duration-200'></div>
-                    <span
-                      className='dot absolute left-1 top-1 h-5 w-5 bg-white rounded-full transition-transform duration-200 ease-in-out peer-checked:translate-
-                    x-5'
-                    ></span>
+                    <span className='dot absolute left-1 top-1 h-5 w-5 bg-white rounded-full transition-transform duration-200 ease-in-out peer-checked:translate-x-5'></span>
                   </label>
                 </td>
               </tr>
