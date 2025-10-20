@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 
 import Title from '../../Components/Title';
 import { useAppContext } from '../../Context/AppContext';
@@ -11,7 +12,7 @@ const ListRoom = () => {
     try {
       const { data } = await axios.get('/api/rooms/owner', {
         headers: {
-          Authorizatio: `Bearer ${await getToken()}`,
+          Authorization: `Bearer ${await getToken()}`,
         },
       });
       if (data.success) {
@@ -23,6 +24,21 @@ const ListRoom = () => {
       toast.error(error.message);
     }
   };
+
+  //toggle room avaibality
+  const toggleAvailabilty = async (roomId) => {
+    const { data } = await axios.post('/api/rooms/toggle-avaialbilty', roomId, {
+      headers: {
+        Authorization: `Bearer ${await getToken()}`,
+      },
+    });
+  };
+
+  useEffect(() => {
+    if (user) {
+      fetchRooms();
+    }
+  }, [user]);
 
   return (
     <div>
