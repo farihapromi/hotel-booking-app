@@ -1,10 +1,37 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Title from '../../Components/Title';
 
 import { assets, dashboardDummyData } from '../../assets/assets';
+import { useAppContext } from '../../Context/AppContext';
 
 const Dashboard = () => {
-  const [dashBoardData, setDashboardData] = useState(dashboardDummyData);
+  const { currency, user, getToken, toast, axios } = useAppContext();
+  const [dashBoardData, setDashboardData] = useState({
+    bookings: [],
+    totalBookings: 0,
+    totalRevenue: 0,
+  });
+  const fetchDashboardData = async () => {
+    try {
+      const { data } = await axios.get('/api/bookings/hotel', {
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
+        },
+      });
+      if (data.success) {
+        setDashboardData(data.dashBoardData);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+  useEffect(() => {
+    if (user) {
+      fetchDashboardData();
+    }
+  }, [user]);
   return (
     <div>
       <Title
@@ -24,7 +51,7 @@ const Dashboard = () => {
           <div className='flex flex-col sm:ml-4 font-medium'>
             <p className='text-blue-500 text-lg'>Total Bookings</p>
             <p className='text-neutral-400 text-base'>
-              {dashBoardData.totalBookings}
+              {dashBoardData?.totalBookings || 0}
             </p>
           </div>
         </div>
@@ -38,7 +65,7 @@ const Dashboard = () => {
           <div className='flex flex-col sm:ml-4 font-medium'>
             <p className='text-blue-500 text-lg'>Total Revenue</p>
             <p className='text-neutral-400 text-base'>
-              $ {dashBoardData.totalRevenue}
+              $ {dashBoardData?.totalRevenue || 0}
             </p>
           </div>
         </div>
@@ -64,7 +91,7 @@ const Dashboard = () => {
             </tr>
           </thead>
           <tbody className='text-sm'>
-            {dashBoardData.bookings.map((item, index) => (
+            {dashBoardData?.bookings?.map((item, index) => (
               <tr key={index}>
                 <td className='py-3 px-4 text-gray-700 border-t border-gray-300'>
                   {item.user.username}
