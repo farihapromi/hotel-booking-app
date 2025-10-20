@@ -65,7 +65,7 @@ const Dashboard = () => {
           <div className='flex flex-col sm:ml-4 font-medium'>
             <p className='text-blue-500 text-lg'>Total Revenue</p>
             <p className='text-neutral-400 text-base'>
-              $ {dashBoardData?.totalRevenue || 0}
+              {currency} {dashBoardData?.totalRevenue || 0}
             </p>
           </div>
         </div>
@@ -100,7 +100,7 @@ const Dashboard = () => {
                   {item.room.roomType}
                 </td>
                 <td className='py-3 px-4 text-gray-700 border-t border-gray-300 text-center'>
-                  {item.totalPrice}
+                  {currency} {item.totalPrice}
                 </td>
                 <td className='py-3 px-4  border-t border-gray-300 flex '>
                   <button
