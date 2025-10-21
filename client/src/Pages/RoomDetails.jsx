@@ -17,12 +17,14 @@ const RoomDetails = () => {
   const [checkInDate, setCheckInDate] = useState(null);
   const [checkOutDate, setCheckOutDate] = useState(null);
   const [guests, setGuests] = useState(1);
+  const [isAvailable, setIsAvailable] = useState(false);
 
   useEffect(() => {
-    const room = roomsDummyData.find((room) => room._id === id);
+    const room = rooms.find((room) => room._id === id);
     room && setRoom(room);
     room && setMainImage(room.images[0]);
-  }, []);
+  }, [rooms]);
+
   return (
     room && (
       <div className='py-28 md:py-35 px-4 md:px-16 lg:px-24 xl:px-32'>
@@ -107,6 +109,9 @@ const RoomDetails = () => {
                 Check-In
               </label>
               <input
+                onChange={(e) => setCheckInDate(e.target.value)}
+                min={checkOutDate}
+                disabled={!checkOutDate}
                 type='date'
                 id='checkInDate'
                 placeholder='Check-In'
@@ -120,6 +125,9 @@ const RoomDetails = () => {
                 Check-Out
               </label>
               <input
+                onChange={(e) => setCheckOutDate(e.target.value)}
+                min={checkInDate}
+                disabled={!checkInDate}
                 type='date'
                 id='checkOutDate'
                 placeholder='Check-Out'
@@ -133,6 +141,8 @@ const RoomDetails = () => {
                 Guests
               </label>
               <input
+                onChange={(e) => setGuests(e.target.value)}
+                value={guests}
                 type='number'
                 id='guests'
                 placeholder='0'
@@ -145,7 +155,7 @@ const RoomDetails = () => {
             type='submit'
             className='bg-primary hover:bg-primary-dull active:scale-95 transition-all text-white rounded-md max-md:w-full max-md:mt-6 md:px-[26px] py-3 md:py-4 text-base cursor-pointer'
           >
-            Check Availability
+            {isAvailable ? 'Book Now' : ' Check Availability'}
           </button>
         </form>
         {/* Common Specifications */}
