@@ -5,11 +5,27 @@ import { assets } from '../assets/assets.js';
 import { useAppContext } from '../Context/AppContext.jsx';
 
 const Hero = () => {
-  const { axios, getToken, navigate, setSearchedCities } = useAppContext();
+  const { axios, getToken, navigate, setSeachedCities } = useAppContext();
   const [destination, setDestination] = useState('');
   const onSearch = async (e) => {
     e.preventDefault();
-    navigate(`/room?destination=${destination}`);
+    navigate(`/rooms?destination=${destination}`);
+    //call apiu to save recent  searched city
+    await axios.post(
+      '/api/user/store-recent-search',
+      {
+        recentSearchedCity: destination,
+      },
+      { headers: { Authorization: `Bearer ${await getToken()}` } }
+    );
+    //add destinaiton to search dities maz 3 recent seached cities
+    setSeachedCities((prevSearchedCities) => {
+      const updatedSearchedCities = [...prevSearchedCities, destination];
+      if (updatedSearchedCities.length > 3) {
+        updatedSearchedCities.shift();
+      }
+      return updatedSearchedCities;
+    });
   };
 
   return (
