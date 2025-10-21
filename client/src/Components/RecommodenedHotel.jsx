@@ -1,45 +1,42 @@
-import { roomsDummyData } from '../assets/assets';
+import React, { useEffect, useState } from 'react';
 import HotelCard from './HotelCard';
 import Title from './Title';
-import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../Context/AppContext';
-import { useState } from 'react';
 
 const RecommodenedHotel = () => {
-  const { rooms, searchedCities } = useAppContext();
+  const { rooms = [], searchedCities = [] } = useAppContext();
   const [recommended, setRecommended] = useState([]);
-  const filterHotels = () => {
-    const filteredHotels = rooms
-      .slice()
-      .filter((room) => searchedCities.includes(room.hotel.city));
-  };
+
+  useEffect(() => {
+    let filteredHotels = [];
+
+    if (searchedCities.length > 0) {
+      // Filter rooms based on searched cities
+      filteredHotels = rooms.filter(
+        (room) => room.hotel && searchedCities.includes(room.hotel.city)
+      );
+    }
+
+    // If no matches or no searched cities, show first 4 hotels as fallback
+    if (filteredHotels.length === 0) {
+      filteredHotels = rooms.slice(0, 4);
+    }
+
+    setRecommended(filteredHotels);
+  }, [rooms, searchedCities]);
 
   return (
     <div className='flex flex-col items-center px-6 md:px-16 lg:px-24 bg-slate-50 py-20'>
       <Title
-        title='Featured Destination'
-        subTitle='Discover our handpicked selection of exceptional properties around the world, offering unparalleled luxury and unforgettable experiences'
+        title='Recommended Hotels'
+        subTitle='Handpicked hotels just for you — experience comfort, luxury, and unforgettable stays wherever you travel.'
       />
-      {rooms.length > 0 ? (
-        <div className='flex flex-wrap justify-center gap-6'>
-          {rooms.slice(0, 4).map((room, index) => (
-            <HotelCard key={room._id} room={room} index={index} />
-          ))}
-        </div>
-      ) : (
-        <p className='text-gray-500 mt-6'>Loading featured rooms...</p>
-      )}
-      {/* 
-Button */}
-      <button
-        onClick={() => {
-          navigate('/rooms');
-          scrollTo(0, 0);
-        }}
-        className='bg-blue-400 text-white  px-4 py-4 mt-8  my-16 rounded-lg hover:bg-blue-600 transition-all cursor-pointer'
-      >
-        View All Destinations
-      </button>
+
+      <div className='flex flex-wrap justify-center gap-6 mt-6'>
+        {recommended.map((room) => (
+          <HotelCard key={room._id} room={room} />
+        ))}
+      </div>
     </div>
   );
 };
