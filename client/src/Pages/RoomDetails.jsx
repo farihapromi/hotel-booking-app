@@ -8,6 +8,7 @@ import {
 } from '../assets/assets';
 import StarRating from '../Components/StarRating';
 import { useAppContext } from '../Context/AppContext';
+import toast from 'react-hot-toast';
 
 const RoomDetails = () => {
   const { rooms, getToken, axios, navigate } = useAppContext();
@@ -18,6 +19,44 @@ const RoomDetails = () => {
   const [checkOutDate, setCheckOutDate] = useState(null);
   const [guests, setGuests] = useState(1);
   const [isAvailable, setIsAvailable] = useState(false);
+  //chekc if the room is available
+  const checkAvailability = async () => {
+    try {
+      //check is check in date greater than checkout date
+      if (checkInDate >= checkOutDate) {
+        toast.error('Check-In date should be less than chek-out date');
+        return;
+      }
+      const { data } = await axios.post(`/api/bookings/check-availabilty`, {
+        room: id,
+        checkInDate,
+        checkOutDate,
+      });
+      if (data.success) {
+        if (data.isAvailable) {
+          setIsAvailable(true);
+          toast.success('Room is avaiable');
+        } else {
+          setIsAvailable(false);
+          toast.error('Room is not avaiable');
+        }
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  //handle form of booking of hotel
+  const onSubmitHandler = async (e) => {
+    try {
+      e.preventDefault();
+      if (!isAvailable) {
+        return checkAvailability();
+      }
+    } catch (error) {}
+  };
 
   useEffect(() => {
     const room = rooms.find((room) => room._id === id);
@@ -110,8 +149,7 @@ const RoomDetails = () => {
               </label>
               <input
                 onChange={(e) => setCheckInDate(e.target.value)}
-                min={checkOutDate}
-                disabled={!checkOutDate}
+                min={new Date().toISOString().split('T')[0]}
                 type='date'
                 id='checkInDate'
                 placeholder='Check-In'
