@@ -29,16 +29,18 @@ const RoomDetails = () => {
       }
       const { data } = await axios.post(`/api/bookings/check-availabilty`, {
         room: id,
-        checkInDate,
-        checkOutDate,
+        // checkInDate,
+        // checkOutDate,
+        checkInDate: new Date(checkInDate),
+        checkOutDate: new Date(checkOutDate),
       });
       if (data.success) {
         if (data.isAvailable) {
           setIsAvailable(true);
-          toast.success('Room is avaiable');
+          toast.success('Room is available');
         } else {
           setIsAvailable(false);
-          toast.error('Room is not avaiable');
+          toast.error('Room is not available');
         }
       } else {
         toast.error(data.message);
@@ -54,8 +56,36 @@ const RoomDetails = () => {
       e.preventDefault();
       if (!isAvailable) {
         return checkAvailability();
+      } else {
+        const { data } = await axios.post(
+          '/api/bookings/book',
+          {
+            room: id,
+            checkInDate,
+            checkOutDate,
+            guests,
+            paymentMethod: 'Pay at Hotel',
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${await getToken()}`,
+            },
+          }
+        );
+        if (data.success) {
+          toast.success(data.message || 'Booking created successfully!');
+
+          setTimeout(() => {
+            navigate('/my-bookings');
+            scrollTo(0, 0);
+          }, 800);
+        } else {
+          toast.error(data.message);
+        }
       }
-    } catch (error) {}
+    } catch (error) {
+      toast.error(data.error);
+    }
   };
 
   useEffect(() => {
@@ -139,6 +169,7 @@ const RoomDetails = () => {
         </div>
         {/* Check in check out form */}
         <form
+          onSubmit={onSubmitHandler}
           className='flex flex-col md:flex-row items-start md:item-center justify-between bg-white shadow-[0px_0px_20px_rgba(0,0,0,0.15)] p-6 rounded-xl mx-auto mt-16 max-w-6xl'
           action=''
         >
